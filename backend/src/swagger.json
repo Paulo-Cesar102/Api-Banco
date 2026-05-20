@@ -1,0 +1,128 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Banco - Tostão",
+    "description": "Documentação da API do Banco Tostão para fins de demonstração.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/clientes": {
+      "post": {
+        "summary": "Cadastra um novo cliente",
+        "tags": ["Clientes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": { "type": "string" },
+                  "email": { "type": "string" },
+                  "cpf": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Cliente cadastrado com sucesso" },
+          "400": { "description": "Erro de validação ou CPF/Email já cadastrado" }
+        }
+      }
+    },
+    "/contas": {
+      "post": {
+        "summary": "Abre uma nova conta para um cliente",
+        "tags": ["Contas"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clienteid": { "type": "integer" },
+                  "numeroConta": { "type": "string" },
+                  "saldo": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Conta aberta com sucesso" },
+          "404": { "description": "Cliente não encontrado" }
+        }
+      }
+    },
+    "/contas/{id}/deposito": {
+      "post": {
+        "summary": "Realiza um depósito em uma conta",
+        "tags": ["Transações"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "valor": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Depósito realizado com sucesso" }
+        }
+      }
+    },
+    "/contas/transferencia": {
+      "post": {
+        "summary": "Realiza uma transferência entre contas",
+        "tags": ["Transações"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contaOrigemId": { "type": "integer" },
+                  "contaDestinoId": { "type": "integer" },
+                  "valor": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Transferência realizada com sucesso" },
+          "400": { "description": "Saldo insuficiente ou conta inválida" }
+        }
+      }
+    },
+    "/contas/{id}/extrato": {
+      "get": {
+        "summary": "Consulta o extrato de uma conta",
+        "tags": ["Transações"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Extrato retornado com sucesso" }
+        }
+      }
+    }
+  }
+}
